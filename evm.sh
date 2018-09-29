@@ -1,0 +1,97 @@
+#!/bin/bash
+#---------------------------------------------------------------------#
+# evm                                                                 #
+#                                                                     #
+# easy virtualbox management bash script              				  #
+#                                                                     #
+# Script	: evm                                                     #
+# Version	: 1.0.1                                                   #
+# Author	: Yasin KARABULAK <yasinkarabulak@gmail.com>              #
+# Date		: 2017-08-30                                              #
+#---------------------------------------------------------------------#
+VERSION='1.0.0'
+PARSER="/home/yasin/bin/evm/evm_parser.php"
+ARGCOUNT=$#
+PROCMACHINE=""
+if [ $ARGCOUNT -ge 2 ] ; then
+	ARGS=$@
+	MACHINES="${ARGS//$1 }"
+	for i in $MACHINES
+	do
+		PROCMACHINE+=" $i"
+	done
+else
+	MACHINES=""
+	PROCMACHINE=""
+fi
+
+if [ -z $1 ]; then
+	echo -e "status"
+	echo -e "remote"
+	echo -e "start|pause|resume|stop|show\t\t[ <vm-name> <vm-name2> ... <vm-nameX> | <all> ]
+clone\t\t\t\tasd\n"
+	/usr/bin/php "$PARSER" 'status'
+	echo -e "\n"
+elif [ $1 = "version" ] && [ -z $2 ]; then
+	echo -e "\n\e[4mEasy Virtual Machine Managament Version ${VERSION//}\e[0m\n"
+elif [ $1 = "status" ] && [ -z $2 ]; then
+	/usr/bin/php "$PARSER" 'status'
+elif [ $1 = "start" ] && [ -z $2 ]; then
+	echo -e "evm start [ <vm-name> <vm-name2> ... <vm-nameX> | <all> ]\n"
+	/usr/bin/php "$PARSER" 'get_stopped'
+	echo ""
+elif [ $1 = "start" ] && [ "$2" != "all" ] && [ "$2" != "" ]; then
+	/usr/bin/php "$PARSER" 'start_machine'$PROCMACHINE
+	echo ""
+elif [ $1 = "start" ] && [ "$2" = "all" ]; then
+	/usr/bin/php "$PARSER" 'start_all'
+	echo ""
+elif [ $1 = "stop" ] && [ -z $2 ]; then
+	echo -e "evm stop [ <vm-name> <vm-name2> ... <vm-nameX> | <all> ]\n"
+	/usr/bin/php "$PARSER" 'get_running'
+	echo ""
+elif [ $1 = "stop" ] && [ "$2" != "all" ] && [ "$2" != "" ]; then
+	/usr/bin/php "$PARSER" 'stop_machine'$PROCMACHINE
+	echo ""
+elif [ $1 = "stop" ] && [ "$2" = "all" ]; then
+	/usr/bin/php "$PARSER" 'stop_all'
+	echo ""
+elif [ $1 = "pause" ] && [ -z $2 ]; then
+	echo -e "evm pause [ <vm-name> <vm-name2> ... <vm-nameX> | <all> ]\n"
+	/usr/bin/php "$PARSER" 'get_running'
+	echo ""
+elif [ $1 = "pause" ] && [ "$2" != "all" ] && [ "$2" != "" ]; then
+	/usr/bin/php "$PARSER" 'pause_machine'$PROCMACHINE
+	echo ""
+elif [ $1 = "pause" ] && [ "$2" = "all" ]; then
+	/usr/bin/php "$PARSER" 'pause_all'
+	echo ""
+elif [ $1 = "resume" ] && [ -z $2 ]; then
+	echo -e "evm resume [ <vm-name> <vm-name2> ... <vm-nameX> | <all> ]\n"
+	/usr/bin/php "$PARSER" 'get_paused'
+	echo ""
+elif [ $1 = "resume" ] && [ "$2" != "all" ] && [ "$2" != "" ]; then
+	/usr/bin/php "$PARSER" 'resume_machine'$PROCMACHINE
+	echo ""
+elif [ $1 = "resume" ] && [ "$2" = "all" ]; then
+	/usr/bin/php "$PARSER" 'resume_all'
+	echo ""
+elif [ $1 = "clone" ] && [ -z $2 ]; then
+	/usr/bin/php "$PARSER" 'get_stopped'
+	echo ""
+elif [ $1 = "clone" ] && [ "$2" != "" ]; then
+	/usr/bin/php "$PARSER" 'clone_machine'$PROCMACHINE
+	echo ""
+elif [ $1 = "show" ] && [ -z $2 ]; then
+	/usr/bin/php "$PARSER" 'get_running'
+	echo ""
+elif [ $1 = "show" ] && [ "$2" != "" ]; then
+	/usr/bin/php "$PARSER" 'show_machine'$PROCMACHINE
+	echo ""
+else
+	echo -e "Hatalı argüman \e[40m\e[31m$1\e[0m\n\nKullanabilecekleriniz evm \e[4m\e[40mstart|pause|stop|clone\e[0m"
+	echo ""
+fi
+
+exit
+vboxmanage list hdds | grep --color -oP '^UUID:\s*\K[a-z0-9-]*'#~ hdd idleri geliyor.
