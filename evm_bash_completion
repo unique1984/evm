@@ -14,17 +14,17 @@ _evm_complete()
     local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
-    if [ $COMP_CWORD -gt 2 ] ; then
+    if [[ $COMP_CWORD -gt 2 ]] ; then
 		prev="${COMP_WORDS[1]}"
     else
 		prev="${COMP_WORDS[COMP_CWORD-1]}"
     fi
-    opts="start pause resume stop show clone status version"
+    opts="start pause resume stop fusermount show clone status version"
     PARSER="/home/yasin/bin/evm/evm_parser.php"
     
-    if [ $COMP_CWORD -eq 1 ] ; then
+    if [[ $COMP_CWORD -eq 1 ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
-    elif [ $COMP_CWORD -eq 2 ] ; then
+    elif [[ $COMP_CWORD -eq 2 ]] ; then
 		case "$prev" in
 			"start")
 				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_stopped clear')" ${cur}) )
@@ -40,6 +40,9 @@ _evm_complete()
 			;;
 			"resume")
 				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_paused clear')" ${cur}) )
+			;;
+			"fusermount")
+				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_fused clear')" ${cur}) )
 			;;
 			"clone")
 				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_stopped clear')" ${cur}) )
@@ -47,7 +50,7 @@ _evm_complete()
 			*)
 			;;
 		esac
-    elif [ $COMP_CWORD -gt 2 ] ; then
+    elif [[ $COMP_CWORD -gt 2 ]] ; then
 		case "$prev" in
 			"start")
 				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_stopped clear')" ${cur}) )
@@ -63,6 +66,9 @@ _evm_complete()
 			;;
 			"resume")
 				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_paused clear')" ${cur}) )
+			;;
+			"fusermount")
+				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_fused clear')" ${cur}) )
 			;;
 			"clone")
 				COMPREPLY=( $(compgen -W "$(/usr/bin/php "$PARSER" 'get_stopped clear')" ${cur}) )
